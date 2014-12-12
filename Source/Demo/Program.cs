@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using Dungeon.Generator.Navigation;
 using Dungeon.Generator.Generation;
+using Dungeon.Generator.Generation.Generators;
 
 namespace Demo
 {
@@ -17,9 +18,15 @@ namespace Demo
             var seed = 1024u;
             var mapDimensions = size.ToDimensions();
             Console.SetWindowSize(Math.Min(mapDimensions.X + 7, 132), Math.Min(mapDimensions.Y + 17, 132));
+            bool roomBased = true;
             while (true)
             {
-                var dungeon = Generator.Generate(size, seed++);
+                ITileMap dungeon;
+                if (roomBased)
+                    dungeon = Generator.GenerateRoomBased(size, seed++);
+                else
+                    dungeon = Generator.GenerateGridBased(size, seed++);
+                roomBased = !roomBased;
                 Render(dungeon);
                 Thread.Sleep(100);
                 Console.WriteLine("Press 'enter' to see a new dungeon");

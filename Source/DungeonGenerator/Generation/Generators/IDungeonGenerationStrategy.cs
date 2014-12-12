@@ -1,4 +1,5 @@
 
+using Dungeon.Generator.Navigation;
 using System;
 
 namespace Dungeon.Generator.Generation.Generators
@@ -6,6 +7,29 @@ namespace Dungeon.Generator.Generation.Generators
     public interface IDungeonGenerationStrategy
     {
         void Execute();
+    }
+
+    public abstract class DungeonGeneration
+    {
+        internal readonly MersennePrimeRandom _random;
+        internal readonly ITileMap _map;
+        internal readonly Point _dimensions;
+        public int GridSize = 6;
+
+        public DungeonGeneration(MersennePrimeRandom random, ITileMap map)
+        {
+            _random = random;
+            _map = map;
+            _dimensions = new Point(map.Width, map.Height).ToGrid(GridSize);
+
+        }
+
+        public abstract void Execute();
+
+        internal bool Chance(int chance)
+        {
+            return _random.Next(0, 101) <= chance;
+        }
     }
 
     public class MazeGeneratorStrategy : IDungeonGenerationStrategy

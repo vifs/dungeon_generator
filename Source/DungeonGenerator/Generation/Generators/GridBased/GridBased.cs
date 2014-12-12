@@ -5,27 +5,17 @@ using Dungeon.Generator.Navigation;
 
 namespace Dungeon.Generator.Generation.Generators.GridBased
 {
-    public class GridBased : IDungeonGenerationStrategy
+    public class GridBased : DungeonGeneration
     {
-        private readonly MersennePrimeRandom _random;
-        private readonly ITileMap _map;
-        
-        private readonly Point _dimensions;
-
-
         private readonly Feature[,] _features;
 
         public GridBased(MersennePrimeRandom random, ITileMap map)
+            : base(random, map)
         {
-            _random = random;
-            _map = map;
-
-            GridSize = 6;
-            _dimensions = new Point(map.Width, map.Height).ToGrid(GridSize);
-            _features = new Feature[_dimensions.X,_dimensions.Y];
+            _features = new Feature[_dimensions.X, _dimensions.Y];
         }
 
-        public void Execute()
+        public override void Execute()
         {
             // STEP 1.
             // place a room in the center
@@ -106,10 +96,5 @@ namespace Dungeon.Generator.Generation.Generators.GridBased
                 feature.Carve(_map, GridSize);
             }
         }
-
-        public bool Chance(int chance)
-        { return _random.Next(0, 101) <= chance; }
-
-        public int GridSize { get; set; }
     }
 }

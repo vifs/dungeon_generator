@@ -1,27 +1,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.AccessControl;
-using Dungeon.Generator.Generation.Generators.RoomBased;
 using Dungeon.Generator.Navigation;
 
-namespace Dungeon.Generator.Generation.Generators
+namespace Dungeon.Generator.Generation.Generators.RoomBased
 {
-    public class RoomGeneratorStrategy : IDungeonGenerationStrategy
+    public class RoomBased : DungeonGeneration
     {
-        private readonly MersennePrimeRandom _random;
-        private readonly ITileMap _map;
-
         private Room[,] _roomGrid;
 
-        public RoomGeneratorStrategy(MersennePrimeRandom random, ITileMap map)
-        {
-            _random = random;
-            _map = map;
 
-            GridSize = 6;
+        public RoomBased(MersennePrimeRandom random, ITileMap map)
+            : base(random, map)
+        {
+            _roomGrid = new Room[_dimensions.X, _dimensions.Y];
         }
 
-        public void Execute()
+        public override void Execute()
         {
             _roomGrid = new Room[_map.Width/GridSize, _map.Height/GridSize];
             var location = new Point {
@@ -90,12 +85,5 @@ namespace Dungeon.Generator.Generation.Generators
                 room.Carve(_map, GridSize);
             }
         }
-
-        private bool Chance(int chance)
-        {
-            return _random.Next(0, 101) <= chance;
-        }
-
-        public int GridSize { get; set; }
     }
 }
